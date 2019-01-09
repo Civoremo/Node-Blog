@@ -1,3 +1,4 @@
+
 const express = require('express');
 const morgan = require('morgan');
 const helmet = require('helmet');
@@ -11,5 +12,7 @@ server.use(express.json());
 server.use(cors());
 
 server.get('/', (req, res) => {
-    res.status('sanity check success');
+    res.send('sanity check success');
 })
+
+module.exports = server;
