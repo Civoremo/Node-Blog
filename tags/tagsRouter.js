@@ -4,7 +4,7 @@ const express = require('express');
 const router = express.Router();
 
 // get all tags
-router.get('/api/tags', (req, res) => {
+router.get('/', (req, res) => {
     const id = req.params.id;
     tagDb.get()
         .then(tags => {
@@ -16,7 +16,7 @@ router.get('/api/tags', (req, res) => {
 });
 
 // get tags with specified ID
-router.get('/api/tags/:id', (req, res) => {
+router.get('/:id', (req, res) => {
     const id = req.params.id;
     tagDb.get(id)
         .then(tags => {

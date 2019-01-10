@@ -4,7 +4,7 @@ const postDb = require('../data/helpers/postDb.js');
 const router = express.Router();
 
 // get all posts
-router.get('/api/posts', (req, res) => {
+router.get('/', (req, res) => {
     postDb.get()
         .then(posts => {
             res.status(200).json({ posts });
@@ -15,7 +15,7 @@ router.get('/api/posts', (req, res) => {
 });
 
 // get post by specific ID
-router.get('/api/posts/:id', (req, res) => {
+router.get('/:id', (req, res) => {
     const userId = req.params.id;
 
     postDb.get(userId)
@@ -28,7 +28,7 @@ router.get('/api/posts/:id', (req, res) => {
 });
 
 // add new post
-router.post('/api/posts', (req, res) => {
+router.post('/', (req, res) => {
     const { user, text } = req.body;
 
     if(req.body) {
@@ -45,7 +45,7 @@ router.post('/api/posts', (req, res) => {
 });
 
 // update specified post
-router.put('/api/posts/:id', (req, res) => {
+router.put('/:id', (req, res) => {
     const id = req.params.id;
 
     if(req.body) {
@@ -62,7 +62,7 @@ router.put('/api/posts/:id', (req, res) => {
 });
 
 // delete specified post
-router.delete('/api/posts/:id', (req, res) => {
+router.delete('/:id', (req, res) => {
     const id = req.params.id;
 
     postDb.remove(id)

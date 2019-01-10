@@ -1,12 +1,12 @@
 
 const express = require('express');
 const db = require('../data/helpers/userDb.js');
-const router = express.Router();
 const upperCaseUserName = require('../common/upperCaseMiddleware.js');
+const router = express.Router();
 
 
 // retrieve all posts by a user
-router.get('/users/tags/:id', (req, res) => {
+router.get('/tags/:id', (req, res) => {
     const id = req.params.id;
     db.getUserPosts(id)
         .then(allPosts => {
@@ -18,7 +18,7 @@ router.get('/users/tags/:id', (req, res) => {
 });
 
 // retrieve all users
-router.get('/users', (req, res, next) => {
+router.get('/', (req, res, next) => {
     db.get()
         .then(users => {
             res.names = users;
@@ -30,7 +30,7 @@ router.get('/users', (req, res, next) => {
 }, upperCaseUserName );
 
 // retrieve specific user with an ID
-router.get('/users/:id', (req, res) => {
+router.get('/:id', (req, res) => {
     const id = req.params.id;
     db.get(id)
         .then(user => {
@@ -46,7 +46,7 @@ router.get('/users/:id', (req, res) => {
 });
 
 // create a new user
-router.post('/users', (req, res) => {
+router.post('/', (req, res) => {
     const { name } = req.body;
     if(name) {
         db.insert(req.body)
@@ -62,7 +62,7 @@ router.post('/users', (req, res) => {
 });
 
 // update already created user
-router.put('/users/:id', (req, res) => {
+router.put('/:id', (req, res) => {
     const id = req.params.id;
     const { name } = req.body;
 
@@ -84,7 +84,7 @@ router.put('/users/:id', (req, res) => {
 });
 
 // delete user with specific ID
-router.delete('/users/:id', (req, res) => {
+router.delete('/:id', (req, res) => {
     const id = req.params.id;
 
     db.remove(id)
