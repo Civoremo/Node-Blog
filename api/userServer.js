@@ -16,12 +16,13 @@ server.use(cors());
 // middleware
 function upperCaseUserName(req, res, next) {
     const { names } = res;
-    const Uuser = names.map(user => ({...user, name: user.name.charAt(0).toUpperCase() + user.name.slice(1)}));
+    const Uuser = names.map(user => ({...user, name: user.name.toUpperCase()}));
 
     res.status(200).json(Uuser);
     next();
 }
 
+// retrieve all posts by a user
 server.get('/api/user/tags/:id', (req, res) => {
     const id = req.params.id;
     db.getUserPosts(id)
@@ -33,6 +34,18 @@ server.get('/api/user/tags/:id', (req, res) => {
         });
 });
 
+// sanity check for server (making sure that it is connected)
+server.get('/', (req, res) => {
+    db.get()
+        .then(result => {
+            res.status(200).json({ error: 'API connected' });
+        })
+        .catch(err => {
+            res.status(500).json({ error: 'API not connected' });
+        });
+});
+
+// retrieve all users
 server.get('/api/user', (req, res, next) => {
     db.get()
         .then(users => {
@@ -44,6 +57,7 @@ server.get('/api/user', (req, res, next) => {
         });
 }, upperCaseUserName );
 
+// retrieve specific user with an ID
 server.get('/api/user/:id', (req, res) => {
     const id = req.params.id;
     db.get(id)
@@ -59,6 +73,7 @@ server.get('/api/user/:id', (req, res) => {
         });
 });
 
+// create a new user
 server.post('/api/user', (req, res) => {
     const { name } = req.body;
     if(name) {
@@ -74,6 +89,7 @@ server.post('/api/user', (req, res) => {
     }
 });
 
+// update already created user
 server.put('/api/user/:id', (req, res) => {
     const id = req.params.id;
     const { name } = req.body;
@@ -95,6 +111,7 @@ server.put('/api/user/:id', (req, res) => {
     }
 });
 
+// delete user with specific ID
 server.delete('/api/user/:id', (req, res) => {
     const id = req.params.id;
 
