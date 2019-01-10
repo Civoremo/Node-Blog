@@ -1,19 +1,10 @@
-console.log('post server connected');
-const postDb = require('../data/helpers/postDb.js');
 
 const express = require('express');
-const morgan = require('morgan');
-const helmet = require('helmet');
-const cors = require('cors');
+const postDb = require('../data/helpers/postDb.js');
+const router = express.Router();
 
-const postServer = express();
-
-postServer.use(morgan('short'));
-postServer.use(helmet());
-postServer.use(express.json());
-postServer.use(cors());
-
-postServer.get('/api/posts', (req, res) => {
+// get all posts
+router.get('/api/posts', (req, res) => {
     postDb.get()
         .then(posts => {
             res.status(200).json({ posts });
@@ -23,7 +14,8 @@ postServer.get('/api/posts', (req, res) => {
         });
 });
 
-postServer.get('/api/posts/:id', (req, res) => {
+// get post by specific ID
+router.get('/api/posts/:id', (req, res) => {
     const userId = req.params.id;
 
     postDb.get(userId)
@@ -35,7 +27,8 @@ postServer.get('/api/posts/:id', (req, res) => {
         });
 });
 
-postServer.post('/api/posts', (req, res) => {
+// add new post
+router.post('/api/posts', (req, res) => {
     const { user, text } = req.body;
 
     if(req.body) {
@@ -51,7 +44,8 @@ postServer.post('/api/posts', (req, res) => {
     }
 });
 
-postServer.put('/api/posts/:id', (req, res) => {
+// update specified post
+router.put('/api/posts/:id', (req, res) => {
     const id = req.params.id;
 
     if(req.body) {
@@ -67,7 +61,8 @@ postServer.put('/api/posts/:id', (req, res) => {
     }
 });
 
-postServer.delete('/api/posts/:id', (req, res) => {
+// delete specified post
+router.delete('/api/posts/:id', (req, res) => {
     const id = req.params.id;
 
     postDb.remove(id)
@@ -83,4 +78,4 @@ postServer.delete('/api/posts/:id', (req, res) => {
         });
 });
 
-module.exports = postServer;
+module.exports = router;

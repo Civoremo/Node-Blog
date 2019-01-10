@@ -1,29 +1,12 @@
-console.log('user server connected');
 
-const db = require('../data/helpers/userDb.js');
 const express = require('express');
-const morgan = require('morgan');
-const helmet = require('helmet');
-const cors = require('cors');
+const db = require('../data/helpers/userDb.js');
+const router = express.Router();
+const upperCaseUserName = require('../common/upperCaseMiddleware.js');
 
-const server = express();
-
-server.use(morgan('short'));
-server.use(helmet());
-server.use(express.json());
-server.use(cors());
-
-// middleware
-function upperCaseUserName(req, res, next) {
-    const { names } = res;
-    const Uuser = names.map(user => ({...user, name: user.name.toUpperCase()}));
-
-    res.status(200).json(Uuser);
-    next();
-}
 
 // retrieve all posts by a user
-server.get('/api/user/tags/:id', (req, res) => {
+router.get('/users/tags/:id', (req, res) => {
     const id = req.params.id;
     db.getUserPosts(id)
         .then(allPosts => {
@@ -34,19 +17,8 @@ server.get('/api/user/tags/:id', (req, res) => {
         });
 });
 
-// sanity check for server (making sure that it is connected)
-server.get('/', (req, res) => {
-    db.get()
-        .then(result => {
-            res.status(200).json({ error: 'API connected' });
-        })
-        .catch(err => {
-            res.status(500).json({ error: 'API not connected' });
-        });
-});
-
 // retrieve all users
-server.get('/api/user', (req, res, next) => {
+router.get('/users', (req, res, next) => {
     db.get()
         .then(users => {
             res.names = users;
@@ -58,7 +30,7 @@ server.get('/api/user', (req, res, next) => {
 }, upperCaseUserName );
 
 // retrieve specific user with an ID
-server.get('/api/user/:id', (req, res) => {
+router.get('/users/:id', (req, res) => {
     const id = req.params.id;
     db.get(id)
         .then(user => {
@@ -74,7 +46,7 @@ server.get('/api/user/:id', (req, res) => {
 });
 
 // create a new user
-server.post('/api/user', (req, res) => {
+router.post('/users', (req, res) => {
     const { name } = req.body;
     if(name) {
         db.insert(req.body)
@@ -90,7 +62,7 @@ server.post('/api/user', (req, res) => {
 });
 
 // update already created user
-server.put('/api/user/:id', (req, res) => {
+router.put('/users/:id', (req, res) => {
     const id = req.params.id;
     const { name } = req.body;
 
@@ -112,7 +84,7 @@ server.put('/api/user/:id', (req, res) => {
 });
 
 // delete user with specific ID
-server.delete('/api/user/:id', (req, res) => {
+router.delete('/users/:id', (req, res) => {
     const id = req.params.id;
 
     db.remove(id)
@@ -128,4 +100,4 @@ server.delete('/api/user/:id', (req, res) => {
         });
 })
 
-module.exports = server;
+module.exports = router;

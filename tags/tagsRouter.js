@@ -1,19 +1,10 @@
-console.log('tag server connected');
 
 const tagDb = require('../data/helpers/tagDb.js');
 const express = require('express');
-const morgan = require('morgan');
-const helmet = require('helmet');
-const cors = require('cors');
+const router = express.Router();
 
-const tagServer = express();
-
-tagServer.use(morgan('short'));
-tagServer.use(helmet());
-tagServer.use(express.json());
-tagServer.use(cors());
-
-tagServer.get('/api/tags', (req, res) => {
+// get all tags
+router.get('/api/tags', (req, res) => {
     const id = req.params.id;
     tagDb.get()
         .then(tags => {
@@ -24,7 +15,8 @@ tagServer.get('/api/tags', (req, res) => {
         });
 });
 
-tagServer.get('/api/tags/:id', (req, res) => {
+// get tags with specified ID
+router.get('/api/tags/:id', (req, res) => {
     const id = req.params.id;
     tagDb.get(id)
         .then(tags => {
@@ -35,4 +27,4 @@ tagServer.get('/api/tags/:id', (req, res) => {
         });
 });
 
-module.exports = tagServer;
+module.exports = router;
